@@ -23,14 +23,14 @@ Tested on Microsoft Excel only but could be work with Word and PowerPoint.
 
 1. Install git (Link: <a href="https://git-scm.com/download/win">https://git-scm.com/download/win</a> )
 2. Enable trust access to the VBA project object model
-    1. Start Microsoft Excel.
-    2. Open a workbook.
-    3. Click File and then Options.
-    4. In the navigation pane, select Trust Center.
-    5. Click Trust Center Settings....
-    6. In the navigation pane, select Macro Settings.
-    7. Ensure that Trust access to the VBA project object model is checked.
-    8. Click OK.
+    <br/> 1. Start Microsoft Excel.
+    <br/> 2. Open a workbook.
+    <br/> 3. Click File and then Options.
+    <br/> 4. In the navigation pane, select Trust Center.
+    <br/> 5. Click Trust Center Settings....
+    <br/> 6. In the navigation pane, select Macro Settings.
+    <br/> 7. Ensure that Trust access to the VBA project object model is checked.
+    <br/> 8. Click OK.
 3. Download excel example file from <a href="https://github.com/dmitrievva/ShibbyGit/releases">Releases</a>, save as .xlam add-in and open in Excel.
 4. Setup Git settings by pressed `Git Settings` button on task pane.
 5. Initialize git repository by pressed `Git Init` button on task pane.
