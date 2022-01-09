@@ -227,6 +227,7 @@ End Sub
 Sub RemoveFilesBeforeExport()
     Dim folderPath  As String
     Dim strFile     As String
+    Dim needDel     As Boolean
     
     If Not ShibbySettings.RemoveFiles Then Exit Sub
     
@@ -234,9 +235,13 @@ Sub RemoveFilesBeforeExport()
     
     strFile = Dir(folderPath)
     Do While Len(strFile) > 0
-        If Not Strings.left(strFile, 4) = ".git" Then
+        needDel = Strings.Right(strFile, 4) = ".cls" Or Strings.Right(strFile, 4) = ".frm" Or _
+                  Strings.Right(strFile, 4) = ".bas"
+        
+        If needDel Then
             Kill folderPath & strFile
         End If
+        
         strFile = Dir
     Loop
     
