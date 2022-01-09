@@ -1,4 +1,11 @@
 Attribute VB_Name = "ShibbySettings"
+'***********************************************************************
+' Original Author:   Eric Addison
+' Link:     https://github.com/ericaddison/ShibbyGit
+'
+' Changed by: Vladimir Dmitriev, https://github.com/dmitrievva/ShibbyGit
+'***********************************************************************
+
 Option Explicit
 
 Private Const APPNAME As String = "ShibbyGit"
@@ -7,6 +14,8 @@ Private Const PROJECT_PATH_PROPERTY As String = "shibby_GitProjectPath"
 Private Const FRX_CLEANUP_PROPERTY As String = "shibby_FrxCleanup"
 Private Const EXPORT_ON_GIT_PROPERTY As String = "shibby_ExportOnGit"
 Private Const FILESTRUCTURE_PROPERTY As String = "shibby_FileStructure"
+Private Const REMOVE_FAILS_BEFORE_EXPORT_PROPERTY As String = "shibby_RemoveFiles"
+
 Public Enum ShibbyFileStructure
     flat = 0
     SimpleSrc = 1
@@ -46,7 +55,7 @@ Public Function GetProjectName() As String
         Case "Microsoft PowerPoint"
             GetProjectName = app.ActivePresentation.name
         Case "Microsoft Excel"
-            GetProjectName = app.ActiveWorkbook.name
+            GetProjectName = app.ActiveSheet.name
         Case "Microsoft Word"
             GetProjectName = app.ActiveDocument.name
       End Select
@@ -93,7 +102,7 @@ Public Property Get ExportOnGit() As Boolean
     ExportOnGit = DocPropIO.GetBooleanFromDocProperties(EXPORT_ON_GIT_PROPERTY)
 End Property
 
-' set the git project path
+' set the export on save setting
 Public Property Let ExportOnGit(ByVal newVal As Boolean)
     DocPropIO.AddBooleanToDocProperties EXPORT_ON_GIT_PROPERTY, newVal
 End Property
@@ -112,4 +121,14 @@ End Property
 ' set the git project path
 Public Property Let fileStructure(ByRef newVal As ShibbyFileStructure)
     DocPropIO.AddNumberToDocProperties FILESTRUCTURE_PROPERTY, newVal
+End Property
+
+' get the remove files before export
+Public Property Get RemoveFiles() As Boolean
+    RemoveFiles = DocPropIO.GetBooleanFromDocProperties(REMOVE_FAILS_BEFORE_EXPORT_PROPERTY)
+End Property
+
+' set the remove files before export
+Public Property Let RemoveFiles(ByVal newVal As Boolean)
+    DocPropIO.AddStringToDocProperties REMOVE_FAILS_BEFORE_EXPORT_PROPERTY, newVal
 End Property

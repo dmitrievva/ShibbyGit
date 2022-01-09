@@ -1,4 +1,11 @@
 Attribute VB_Name = "DocPropIO"
+'***********************************************************************
+' Original Author:   Eric Addison
+' Link:     https://github.com/ericaddison/ShibbyGit
+'
+' Changed by: Vladimir Dmitriev, https://github.com/dmitrievva/ShibbyGit
+'***********************************************************************
+
 ' intentionally NOT option explicit so GetDocProps works
 
 Private docProps As Office.DocumentProperties
@@ -78,21 +85,18 @@ Public Sub RemoveDocProp(ByVal name As String)
 End Sub
 
 
-
 Public Function GetDocProps() As DocumentProperties
-    Dim name As String
-    name = Application.name
-    
     Dim app As Object
     Set app = Application
     
-    Select Case name
+    Select Case Application.name
         Case "Microsoft PowerPoint"
-            Set GetDocProps = ActivePresentation.CustomDocumentProperties
+            Set GetDocProps = app.ActivePresentation.CustomDocumentProperties
         Case "Microsoft Excel"
-            Set GetDocProps = ActiveWorkbook.CustomDocumentProperties
+            Set GetDocProps = app.ActiveWorkbook.CustomDocumentProperties
         Case "Microsoft Word"
-            Set GetDocProps = ActiveDocument.CustomDocumentProperties
+            Set GetDocProps = app.ActiveDocument.CustomDocumentProperties
     End Select
+    
 End Function
 

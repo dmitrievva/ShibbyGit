@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} GitRemoteForm 
    Caption         =   "Git Remote"
-   ClientHeight    =   3660
+   ClientHeight    =   4800
    ClientLeft      =   120
    ClientTop       =   450
    ClientWidth     =   5415
@@ -13,24 +13,23 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+'***********************************************************************
+' Original Author:   Eric Addison
+' Link:     https://github.com/ericaddison/ShibbyGit
+'
+' Changed by: Vladimir Dmitriev, https://github.com/dmitrievva/ShibbyGit
+'***********************************************************************
 
-
-
-
-
-
-
-
-
-
-
-
-
+Option Explicit
 
 Public remotes As Collection
 Public branches As Collection
 
-Public Sub resetForm()
+Public Sub ResetForm()
+    Me.PushButton.caption = "Push " & ChrW(8599)
+    Me.PullButton.caption = "Pull " & ChrW(8595)
+    Me.FetchButton.caption = "Fetch"
+
     Set branches = GitParser.ParseBranches
     AddBranchesToList
     
@@ -100,7 +99,7 @@ End Sub
 
 
 Private Sub DoneButton_Click()
-    GitRemoteForm.hide
+    GitRemoteForm.Hide
 End Sub
 
 Private Sub OKButton_Click()
@@ -142,3 +141,4 @@ End Sub
 Private Sub FetchButton_Click()
     AddFetchRemotesToList
 End Sub
+

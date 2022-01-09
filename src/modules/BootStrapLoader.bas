@@ -1,4 +1,11 @@
 Attribute VB_Name = "BootStrapLoader"
+'***********************************************************************
+' Original Author:   Eric Addison
+' Link:     https://github.com/ericaddison/ShibbyGit
+'
+' Changed by: Vladimir Dmitriev, https://github.com/dmitrievva/ShibbyGit
+'***********************************************************************
+
 ' self-contained function to load ShibbyGit
 ' Run this routine once to load the ShibbyGit source
 ' then forget about it
@@ -22,31 +29,31 @@ Public Sub LoadShibbyGitCode()
     ' import files
     With Application.VBE.ActiveVBProject.VBComponents
         Dim file As String
-        file = dir(srcFolder & "\modules\")
+        file = Dir(srcFolder & "\modules\")
         On Error GoTo LoadError
             While file <> ""
                 If file Like "*.bas" Then
                     .Import (srcFolder & "\modules\" & file)
                 End If
-                file = dir
+                file = Dir
             Wend
         
-        file = dir(srcFolder & "\forms\")
+        file = Dir(srcFolder & "\forms\")
         On Error Resume Next
             While file <> ""
                 If file Like "*.frm" Then
                     .Import (srcFolder & "\forms\" & file)
                 End If
-                file = dir
+                file = Dir
             Wend
 
-        file = dir(srcFolder & "\classModules\")
+        file = Dir(srcFolder & "\classModules\")
         On Error Resume Next
             While file <> ""
                 If file Like "*.cls" Then
                     .Import (srcFolder & "\classModules\" & file)
                 End If
-                file = dir
+                file = Dir
             Wend
         On Error GoTo 0
     

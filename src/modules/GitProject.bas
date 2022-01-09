@@ -1,5 +1,10 @@
 Attribute VB_Name = "GitProject"
-Option Explicit
+'***********************************************************************
+' Original Author:   Eric Addison
+' Link:     https://github.com/ericaddison/ShibbyGit
+'
+' Changed by: Vladimir Dmitriev, https://github.com/dmitrievva/ShibbyGit
+'***********************************************************************
 
 ' Look for .frx files in the git status
 ' if present, check for associated .frm
@@ -16,7 +21,7 @@ Public Sub RemoveUnusedFrx()
     Dim statusLines As New Collection
     Dim i As Integer
     For i = LBound(strArray) To UBound(strArray)
-        If Not InCollection(statusLines, strArray(i)) Then
+        If Not IsInCollection(statusLines, strArray(i)) Then
             statusLines.Add strArray(i), strArray(i)
         End If
     Next i
@@ -27,10 +32,10 @@ Public Sub RemoveUnusedFrx()
     Dim line As Variant
     For Each line In statusLines
         If line Like "*.frx" Then
-            Dim form As String
-            form = Left(line, Len(line) - 3)
-            form = form & "frm"
-            If Not InCollection(statusLines, form) Then
+            Dim Form As String
+            Form = left(line, Len(line) - 3)
+            Form = Form & "frm"
+            If Not IsInCollection(statusLines, Form) Then
                 checkoutFiles = checkoutFiles & " " & GetFileNameFromStatusLine(line)
             End If
         End If
@@ -38,16 +43,6 @@ Public Sub RemoveUnusedFrx()
         
     GitCommands.RunGitAsProcess ("checkout -- " & checkoutFiles)
 End Sub
-
-
-Public Function InCollection(col As Collection, key As String) As Boolean
-    On Error GoTo incol
-    col.Item key
-incol:
-    InCollection = (Err.Number = 0)
-    On Error GoTo 0
-End Function
-
 
 Private Function GetFileNameFromStatusLine(ByVal line As String) As String
     If Len(line) > 3 Then

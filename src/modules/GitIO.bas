@@ -1,4 +1,11 @@
 Attribute VB_Name = "GitIO"
+'***********************************************************************
+' Original Author:   Eric Addison
+' Link:     https://github.com/ericaddison/ShibbyGit
+'
+' Changed by: Vladimir Dmitriev, https://github.com/dmitrievva/ShibbyGit
+'***********************************************************************
+
 Option Explicit
 Private Const MODULEFOLDER As String = "modules"
 Private Const CLASSFOLDER As String = "classModules"
@@ -96,6 +103,9 @@ Private Function GitExportAll() As String
         Exit Function
     End If
     
+    ' remove files before export if needed
+    RemoveFilesBeforeExport
+    
     ' create folders if needed
     CheckCodeFolders
     
@@ -110,7 +120,7 @@ Private Function GitExportAll() As String
     Dim filesWritten As String
     Dim nextFile As String
     Dim nComps As Integer
-    nComps = Application.VBE.VBProjects.Item(pProjectInd).VBComponents.Count
+    nComps = Application.VBE.VBProjects.Item(pProjectInd).VBComponents.count
     
     For compInd = 1 To nComps
         nextFile = ExportToProperFolder(compInd)
@@ -138,7 +148,7 @@ Private Function GetExtensionFromModuleType(ByVal codeType As Integer)
     Select Case codeType
        Case CodeUtils.ClassModule
            extension = ".cls"
-       Case CodeUtils.form
+       Case CodeUtils.Form
            extension = ".frm"
        Case CodeUtils.Module
            extension = ".bas"
@@ -173,14 +183,16 @@ Private Function ExportToProperFolder(ByVal compInd As Integer)
             ' separated source folder structure
             Else
                 Select Case .Type
-                Case ClassModule
-                    file = file & CLASSFOLDER
-                Case form
-                    file = file & FORMFOLDER
-                Case Module
-                    file = file & MODULEFOLDER
+                    Case ClassModule
+                        file = file & CLASSFOLDER
+                    Case Form
+                        file = file & FORMFOLDER
+                    Case Module
+                        file = file & MODULEFOLDER
                 End Select
+                
                 file = file & "\" & .name & extension
+
                 .Export (pGitDir & "\" & file)
             End If
          End If
@@ -209,4 +221,23 @@ Private Sub CheckCodeFolders()
             End If
         End If
     End If
+End Sub
+
+' Remove files before export
+Sub RemoveFilesBeforeExport()
+    Dim folderPath  As String
+    Dim strFile     As String
+    
+    If Not ShibbySettings.RemoveFiles Then Exit Sub
+    
+    folderPath = pGitDir & "\"
+    
+    strFile = Dir(folderPath)
+    Do While Len(strFile) > 0
+        If Not Strings.left(strFile, 4) = ".git" Then
+            Kill folderPath & strFile
+        End If
+        strFile = Dir
+    Loop
+    
 End Sub

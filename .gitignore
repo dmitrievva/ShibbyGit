@@ -3,3 +3,5 @@
 *.pptm
 *.db
 *.tmp
+
+.idea

@@ -1,13 +1,20 @@
 Attribute VB_Name = "CodeUtils"
+'***********************************************************************
+' Original Author:   Eric Addison
+' Link:     https://github.com/ericaddison/ShibbyGit
+'
+' Changed by: Vladimir Dmitriev, https://github.com/dmitrievva/ShibbyGit
+'***********************************************************************
+
 ' Any functions to help with the actual coding process
 Option Explicit
 
 ' component type constants
 Public Const Module As Integer = 1
 Public Const ClassModule As Integer = 2
-Public Const form As Integer = 3
+Public Const Form As Integer = 3
 Public Const Document As Integer = 100
-Public Const Padding As Integer = 24
+Public Const padding As Integer = 24
 
 Private pFolder As String
 
@@ -47,7 +54,7 @@ Public Function FindFileVBProject(Optional ByVal fileName As String = "") As Int
 
     With Application
         Dim ind As Integer
-        For ind = 1 To .VBE.VBProjects.Count
+        For ind = 1 To .VBE.VBProjects.count
             Dim VBFileName As String
             On Error Resume Next
                 VBFileName = .VBE.VBProjects.Item(ind).fileName
@@ -116,7 +123,7 @@ Public Function CheckCodeType(ByVal file As String) As Integer
     If file Like "*.bas" Then
         CheckCodeType = Module
     ElseIf file Like "*.frm" Then
-        CheckCodeType = form
+        CheckCodeType = Form
     ElseIf file Like "*.cls" Then
         CheckCodeType = ClassModule
     Else
@@ -130,16 +137,41 @@ Public Function ImportCodeFromFolder(ByVal folder As String, ByVal projectInd As
     Dim file As String
     Dim ModuleName As String
     Dim filesRead As String
-    file = dir(folder & "\")
+    file = Dir(folder & "\")
     While file <> ""
         ModuleName = RemoveAndImportModule(projectInd, folder & "\" & file)
         If ModuleName <> "" Then
             filesRead = filesRead & vbCrLf & ModuleName
         End If
-        file = dir
+        file = Dir
     Wend
     ImportCodeFromFolder = filesRead
 End Function
+
+' open selected file in Visual Basic Editor
+Public Sub EditSelectedFile(ByVal file As String)
+    Dim oVBComponent    As Object
+    Dim fileName        As String
+    Dim found           As Boolean
+    
+    fileName = Split(file, ".")(0)
+    
+    On Error Resume Next
+    found = False
+    For Each oVBComponent In ActiveWorkbook.VBProject.VBComponents
+        If UCase(oVBComponent.name) = UCase(fileName) Then
+            oVBComponent.Activate
+            found = True
+            Exit For
+        End If
+    Next
+    
+    If Not found Then
+        MsgBox "File '" & file & "' not found!"
+    End If
+    
+    Set oVBComponent = Nothing
+End Sub
 
 
 '****************************************************
@@ -160,12 +192,12 @@ Private Function ExportAll() As String
         Dim ind As Integer
         Dim filesWritten As String
         Dim extension As String
-        For ind = 1 To .Count
+        For ind = 1 To .count
             extension = ""
             Select Case .Item(ind).Type
                Case ClassModule
                    extension = ".cls"
-               Case form
+               Case Form
                    extension = ".frm"
                Case Module
                    extension = ".bas"
@@ -218,17 +250,17 @@ End Function
 
 
 Private Sub test()
-    Dim proc As New Process
-    proc.StartInfo.fileName = "cmd.exe"
-    proc.StartInfo.Arguments = "/k ipconfig"
-    proc.StartInfo.CreateNoWindow = True
-    proc.StartInfo.UseShellExecute = False
-    proc.StartInfo.RedirectStandardOutput = True
-    proc.Start()
-    proc.WaitForExit()
-
-    Dim output() As String = proc.StandardOutput.ReadToEnd.Split(CChar(vbLf))
-    For Each ln As String In output
-        RichTextBox1.AppendText (ln & vbNewLine)
-    Next
+'    Dim proc As New Process
+'    proc.StartInfo.fileName = "cmd.exe"
+'    proc.StartInfo.Arguments = "/k ipconfig"
+'    proc.StartInfo.CreateNoWindow = True
+'    proc.StartInfo.UseShellExecute = False
+'    proc.StartInfo.RedirectStandardOutput = True
+'    proc.Start()
+'    proc.WaitForExit()
+'
+'    Dim output() As String = proc.StandardOutput.ReadToEnd.Split(CChar(vbLf))
+'    For Each ln As String In output
+'        RichTextBox1.AppendText (ln & vbNewLine)
+'    Next
 End Sub

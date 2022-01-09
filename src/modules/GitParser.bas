@@ -1,9 +1,20 @@
 Attribute VB_Name = "GitParser"
+'***********************************************************************
+' Original Author:   Eric Addison
+' Link:     https://github.com/ericaddison/ShibbyGit
+'
+' Changed by: Vladimir Dmitriev, https://github.com/dmitrievva/ShibbyGit
+'***********************************************************************
+
+
 Public Function ParseBranches() As Collection
 
     Dim branches As New Collection
     Dim output As String
     output = GitCommands.RunGitAsProcess("branch")
+    
+'    commits1 = GitCommands.RunGitAsProcess("reflog")
+'    commits2 = GitCommands.RunGitAsProcess("log --graph --oneline")
     
     Dim branchNames() As String
     branchNames = Split(output, vbLf)

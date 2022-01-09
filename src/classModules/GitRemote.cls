@@ -7,6 +7,11 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
+'*********************************************************
+' Author:   Eric Addison
+' Link:     https://github.com/ericaddison/ShibbyGit
+'*********************************************************
+
 ' class gitBranch
 ' represents one git project branch
 

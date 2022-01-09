@@ -1,11 +1,17 @@
 Attribute VB_Name = "FileUtils"
+'***********************************************************************
+' Original Author:   Eric Addison
+' Link:     https://github.com/ericaddison/ShibbyGit
+'
+' Changed by: Vladimir Dmitriev, https://github.com/dmitrievva/ShibbyGit
+'***********************************************************************
+
 Option Explicit
 
 Public Const GOOD_FOLDER As String = "goodFolder"
 Public Const BAD_FOLDER As String = "badFolder"
 
 Private Declare Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
-
 
 ' Check an incoming folder path to make sure it is valid
 ' broswe for a new one if invalid
@@ -139,3 +145,15 @@ Public Function FileBrowserMultiSelect(Optional ByVal sTitle As String = "Browse
     End With
     Set FileBrowserMultiSelect = Nothing
 End Function
+
+' Open file folder in explorer
+Public Sub OpenFileFolder(file As String)
+    Dim folderPath  As String
+    
+    If file = "" Then Exit Sub
+    If Dir(file, vbDirectory) = "" Then Exit Sub
+    
+    folderPath = left(file, InStrRev(file, "\"))
+    Shell "explorer """ & folderPath & "", vbNormalFocus
+    
+End Sub

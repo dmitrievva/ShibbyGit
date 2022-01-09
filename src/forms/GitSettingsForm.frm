@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} GitSettingsForm 
    Caption         =   "ShibbyGit Settings"
-   ClientHeight    =   7320
+   ClientHeight    =   7845
    ClientLeft      =   30
    ClientTop       =   360
    ClientWidth     =   8580
@@ -13,12 +13,14 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+'***********************************************************************
+' Original Author:   Eric Addison
+' Link:     https://github.com/ericaddison/ShibbyGit
+'
+' Changed by: Vladimir Dmitriev, https://github.com/dmitrievva/ShibbyGit
+'***********************************************************************
 
-
-
-
-
-
+Option Explicit
 
 
 Private needGitUserNameUpdate As Boolean
@@ -28,35 +30,35 @@ Private needGitUserEmailUpdate As Boolean
 '****************************************************************
 ' initialize
 
-Public Sub resetForm()
+Public Sub ResetForm()
     ' set the gitExe path text
-    GitExeTextBox.Text = ShibbySettings.GitExePath
+    GitExeTextBox.text = ShibbySettings.GitExePath
     
     ' set the project path text
-    ProjectPathTextBox.Text = ShibbySettings.GitProjectPath
+    ProjectPathTextBox.text = ShibbySettings.GitProjectPath
     
-    If GitExeTextBox.Text <> "" Then
+    If GitExeTextBox.text <> "" Then
         ' set the username field
         Dim userName As String
-        If ProjectPathTextBox.Text = "" Then
+        If ProjectPathTextBox.text = "" Then
             userName = GitCommands.RunGitAsProcess("config user.name", UseProjectPath:=False)
         Else
             userName = GitCommands.RunGitAsProcess("config user.name")
         End If
         If Len(userName) > 0 Then
-            userName = Left(userName, Len(userName) - 1)
+            userName = left(userName, Len(userName) - 1)
         End If
         UserNameBox.value = userName
         
         ' set the email field
         Dim userEmail As String
-        If ProjectPathTextBox.Text = "" Then
+        If ProjectPathTextBox.text = "" Then
             userEmail = GitCommands.RunGitAsProcess("config user.email", UseProjectPath:=False)
         Else
             userEmail = GitCommands.RunGitAsProcess("config user.email")
         End If
         If Len(userEmail) > 0 Then
-            userEmail = Left(userEmail, Len(userEmail) - 1)
+            userEmail = left(userEmail, Len(userEmail) - 1)
         End If
         UserEmailBox.value = userEmail
     End If
@@ -64,13 +66,17 @@ Public Sub resetForm()
     ' set the frx box value
     FrxCleanupBox.value = ShibbySettings.FrxCleanup
     
-    ' set the frx box value
+    ' set the export on git box value
     ExportOnGitBox.value = ShibbySettings.ExportOnGit
+    
+    ' set the remove files before export value
+    RemoveFilesBox.value = ShibbySettings.RemoveFiles
     
     ' Add items to the file structure box
     FileStructureBox.AddItem "Flat File Stucture"
     FileStructureBox.AddItem "Simple Src Structure"
     FileStructureBox.AddItem "Separated Src Structure"
+    
     Dim fsIndex As ShibbyFileStructure
     fsIndex = ShibbySettings.fileStructure
     FileStructureBox.ListIndex = fsIndex
@@ -85,7 +91,7 @@ End Sub
 ' component callbacks
 
 Private Sub CancelButton_Click()
-    GitSettingsForm.hide
+    GitSettingsForm.Hide
 End Sub
 
 Private Sub OKButton_Click()
@@ -96,7 +102,9 @@ Private Sub OKButton_Click()
     SaveFrxCleanup
     SaveExportOnGit
     SaveFileStructure
-    GitSettingsForm.hide
+    SaveRemoveFilesBeforeExport
+    
+    GitSettingsForm.Hide
 End Sub
 
 Private Sub UserEmailBox_Change()
@@ -109,12 +117,12 @@ End Sub
 
 
 Private Sub GitExeBrowseButton_Click()
-    GitExeTextBox.Text = FileUtils.FileBrowser("Browser for git.exe")
+    GitExeTextBox.text = FileUtils.FileBrowser("Browser for git.exe")
 End Sub
 
 
 Private Sub ProjectPathBrowseButton_Click()
-    ProjectPathTextBox.Text = FileUtils.FolderBrowser("Browse for Git project folder")
+    ProjectPathTextBox.text = FileUtils.FolderBrowser("Browse for Git project folder")
 End Sub
 
 
@@ -124,7 +132,7 @@ End Sub
 ' Save the project path as a document property
 Private Sub SaveProjectPath()
     Dim newPath As String
-    newPath = ProjectPathTextBox.Text
+    newPath = ProjectPathTextBox.text
     
     If newPath <> "" And FileUtils.FileOrDirExists(newPath) = False Then
         MsgBox "Cannot find file: " & newPath
@@ -139,7 +147,7 @@ End Sub
 ' save the gitExe path as a registry property
 Private Sub SaveGitExe()
     Dim newPath As String
-    newPath = GitExeTextBox.Text
+    newPath = GitExeTextBox.text
     
     If newPath <> "" And FileUtils.FileOrDirExists(newPath) = False Then
         MsgBox "Cannot find file: " & newPath
@@ -180,4 +188,9 @@ End Sub
 ' save the File structure
 Private Sub SaveFileStructure()
     ShibbySettings.fileStructure = FileStructureBox.ListIndex
+End Sub
+
+' save remove files before export
+Private Sub SaveRemoveFilesBeforeExport()
+    ShibbySettings.RemoveFiles = RemoveFilesBox.value
 End Sub

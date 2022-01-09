@@ -1,16 +1,49 @@
 Attribute VB_Name = "GitCommands"
+'***********************************************************************
+' Original Author:   Eric Addison
+' Link:     https://github.com/ericaddison/ShibbyGit
+'
+' Changed by: Vladimir Dmitriev, https://github.com/dmitrievva/ShibbyGit
+'***********************************************************************
+
 Option Explicit
 
 Public Declare Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long) 'For 32 Bit Systems
 
-
-Public Sub GitCommit(ByVal message As String)
+Public Sub GitInit()
     Dim out As String
+    out = RunGitAsProcess("init")
+    If out = "" Then
+        out = "No output from git init"
+    End If
+    MsgBox out
+End Sub
+
+Public Sub GitCommitAm(ByVal message As String)
+    Dim out As String
+    
     out = RunGitAsProcess("commit -am """ & message & """")
+    
     If out = "" Then
         out = "No output from commit"
     End If
     MsgBox out
+    
+    GitCommits.ClearDiffCache
+End Sub
+
+Public Sub GimCommit(ByVal message As String)
+    Dim out As String
+
+    out = RunGitAsProcess("commit -m """ & message & """")
+    
+    If out = "" Then
+        out = "No output from commit"
+    End If
+    
+    MsgBox out
+    
+    GitCommits.ClearDiffCache
 End Sub
 
 Public Sub GitStatus()
@@ -61,8 +94,8 @@ Public Sub RunGitInShell(ByVal options As String, Optional ByVal UseProjectPath 
     command = "cmd /c echo Running 'git " & options & "'" & _
         " & " & gitExe & options & " & pause"
         
-    Debug.Print command
-    shell command, 1
+        
+    Shell command, 1
 End Sub
 
 
@@ -89,6 +122,7 @@ Public Function RunGitAsProcess(ByVal options As String, Optional ByVal waitTime
     ' call git
     Dim output As String
     output = ShellRedirect.Redirect(gitExe, options, waitTime)
+    
     
     RunGitAsProcess = output
 End Function

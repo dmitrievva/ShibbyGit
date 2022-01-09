@@ -1,70 +1,95 @@
 Attribute VB_Name = "UI"
+'***********************************************************************
+' Original Author:   Eric Addison
+' Link:     https://github.com/ericaddison/ShibbyGit
+'
+' Changed by: Vladimir Dmitriev, https://github.com/dmitrievva/ShibbyGit
+'***********************************************************************
+
 Option Explicit
 
-Public Sub DoGitAddAll(control As IRibbonControl)
+Public Sub DoGitAddAll(Control As IRibbonControl)
     GitCommands.GitAddAll
 End Sub
 
-Public Sub DoGitStatus(control As IRibbonControl)
+Public Sub DoGitStatus(Control As IRibbonControl)
     GitCommands.GitStatus
 End Sub
 
-Public Sub DoGitLog(control As IRibbonControl)
+Public Sub DoGitLog(Control As IRibbonControl)
     GitCommands.GitLog
 End Sub
 
-Public Sub ShowGitSettingsForm(control As IRibbonControl)
+Public Sub DoGitInit(Control As IRibbonControl)
+    GitCommands.GitInit
+End Sub
+
+Public Sub ShowGitSettingsForm(Control As IRibbonControl)
     Load GitSettingsForm
-    GitSettingsForm.resetForm
+    GitSettingsForm.ResetForm
     MoveFormOnApplication GitSettingsForm
     GitSettingsForm.Show
     Unload GitSettingsForm
 End Sub
 
-Public Sub ShowGitRemoteForm(control As IRibbonControl)
+Public Sub ShowGitRemoteForm(Control As IRibbonControl)
     Load GitRemoteForm
-    GitRemoteForm.resetForm
+    GitRemoteForm.ResetForm
     MoveFormOnApplication GitRemoteForm
     GitRemoteForm.Show False
 End Sub
 
 
-Public Sub ShowGitCommitForm(control As IRibbonControl)
-    Load GitCommitMessageForm
+Public Sub ShowGitCommitForm(Control As IRibbonControl)
+    With GitCommitMessageForm
+        .caption = "Git Commit Message"
+        .TitleLabel.caption = "Enter Commit Message"
+        .OKButton.caption = "commit -am"
+        
+        .Callback = "GitCommitAm"
+    End With
+    
     MoveFormOnApplication GitCommitMessageForm
-    GitCommitMessageForm.Show
+    GitCommitMessageForm.Show False
 End Sub
 
-Public Sub ShowGitOtherForm(control As IRibbonControl)
+Public Sub ShowGitOtherForm(Control As IRibbonControl)
     If ShibbySettings.ExportOnGit Then
         GitIO.GitExport ShibbySettings.GitProjectPath, ShibbySettings.fileStructure
     End If
     Load GitConsoleForm
     MoveFormOnApplication GitConsoleForm
-    GitConsoleForm.OutputBox.ScrollBars = fmScrollBarsVertical
+    GitConsoleForm.OutputBox.scrollBars = fmScrollBarsVertical
     GitConsoleForm.Show False
+End Sub
+
+Public Sub ShowGitTreeForm(Control As IRibbonControl)
+    Load GitTreeForm
+    GitTreeForm.ResetForm
+    MoveFormOnApplication GitTreeForm
+    GitTreeForm.Show False
 End Sub
 
 Public Sub NonModalMsgBox(ByVal message As String)
     Load NonModalMsgBoxForm
     MoveFormOnApplication NonModalMsgBoxForm
     NonModalMsgBoxForm.Show False
-    NonModalMsgBoxForm.Label1.Caption = message
+    NonModalMsgBoxForm.Label1.caption = message
 End Sub
 
 Public Sub HideNonModalMsgBox()
-    NonModalMsgBoxForm.hide
+    NonModalMsgBoxForm.Hide
 End Sub
 
 
-Private Sub MoveFormOnApplication(ByVal form As Variant)
-    form.Left = Application.ActiveWindow.Left
-    form.Top = Application.ActiveWindow.Top
+Public Sub MoveFormOnApplication(ByVal Form As Variant)
+    Form.left = Application.ActiveWindow.left
+    Form.top = Application.ActiveWindow.top
 End Sub
 
 
 ' public interface for export all
-Public Sub ExportAllMsgBox(control As IRibbonControl)
+Public Sub ExportAllMsgBox(Control As IRibbonControl)
     Dim folder As String
     folder = FileUtils.FolderBrowser("Browse for folder for export")
     If folder = "" Then
@@ -82,7 +107,7 @@ End Sub
 
 
 ' public interface for import from
-Public Sub ImportSelectedMsgBox(control As IRibbonControl)
+Public Sub ImportSelectedMsgBox(Control As IRibbonControl)
     Dim files As FileDialogSelectedItems
     Set files = FileUtils.FileBrowserMultiSelect("Browse for code files to import", _
             "VBA Code Module", "*.bas; *.frm; *.cls")
@@ -103,7 +128,7 @@ End Sub
 
 
 ' public interface for GitExport
-Public Sub GitExportMsgBox(control As IRibbonControl)
+Public Sub GitExportMsgBox(Control As IRibbonControl)
     NonModalMsgBox "Exporting files to Git Folder" & vbCrLf & vbCrLf & "This could take a second or two . . ."
     FileUtils.DoEventsAndWait 10, 2
     
@@ -118,7 +143,7 @@ Public Sub GitExportMsgBox(control As IRibbonControl)
 End Sub
 
 ' public interface for GitImport
-Public Sub GitImportMsgBox(control As IRibbonControl)
+Public Sub GitImportMsgBox(Control As IRibbonControl)
     NonModalMsgBox "Importing files from Git Folder" & vbCrLf & vbCrLf & "This could take a second or two . . ."
     FileUtils.DoEventsAndWait 10, 2
     
@@ -132,4 +157,27 @@ Public Sub GitImportMsgBox(control As IRibbonControl)
     MsgBox output
 End Sub
 
-
+' public interface for Export Code and Commit
+Public Sub GitExportAndCommit(Control As IRibbonControl)
+    Dim output      As String
+    
+    ' Export code
+    output = GitIO.GitExport(ShibbySettings.GitProjectPath, ShibbySettings.fileStructure)
+    
+    ' Add All
+    GitCommands.GitAddAll
+    
+    ' Commit
+    With GitCommitMessageForm
+        .caption = "Git Commit Message"
+        .TitleLabel.caption = "Enter Commit Message"
+        .OKButton.caption = "commit -am"
+        
+        .Callback = "GitCommitAm"
+    End With
+    
+    Load GitCommitMessageForm
+    
+    MoveFormOnApplication GitCommitMessageForm
+    GitCommitMessageForm.Show False
+End Sub
