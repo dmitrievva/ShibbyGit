@@ -214,6 +214,7 @@ Sub AddSelectedFilesAndCommit(files As Collection)
     ' Commit
     Load GitCommitMessageForm
     MoveFormOnApplication GitCommitMessageForm
+    GitCommitMessageForm.ResetForm
     
     With GitCommitMessageForm
         .caption = "Git Commit Message"
@@ -235,6 +236,7 @@ Sub SquashCommits(index As String, message As String)
     ' Commit
     Load GitCommitMessageForm
     MoveFormOnApplication GitCommitMessageForm
+    GitCommitMessageForm.ResetForm
     
     With GitCommitMessageForm
         .caption = "Git Commit Message"

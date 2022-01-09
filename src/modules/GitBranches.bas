@@ -7,7 +7,10 @@ Attribute VB_Name = "GitBranches"
 Option Explicit
 
 Sub CreateNewBranch()
-
+    
+    Load GitCommitMessageForm
+    GitCommitMessageForm.ResetForm
+    
     With GitCommitMessageForm
         .caption = "Create New Branch"
         .TitleLabel.caption = "Write branch name"
@@ -18,7 +21,6 @@ Sub CreateNewBranch()
     
     MoveFormOnApplication GitCommitMessageForm
     GitCommitMessageForm.Show False
-
 End Sub
 
 Sub RunGitNewBranch(ByVal branchName As String)
@@ -44,6 +46,9 @@ Sub CheckoutSelectedBranch(branch As String)
 End Sub
 
 Sub NewBranchFromSelectedBranch(branch As String)
+    Load GitCommitMessageForm
+    GitCommitMessageForm.ResetForm
+    
     With GitCommitMessageForm
         .caption = "New Branch From Branch " & branch
         .TitleLabel.caption = "Write branch name"
@@ -94,7 +99,9 @@ Sub RebaseCurrentOntoSelectedBranch(currentBranch As String, selectedBranch As S
 End Sub
 
 Sub RenameSelectedBranch(ByVal branch As String)
-
+    Load GitCommitMessageForm
+    GitCommitMessageForm.ResetForm
+    
     With GitCommitMessageForm
         .caption = "Rename Selected Branch "
         .TitleLabel.caption = "Write branch name"

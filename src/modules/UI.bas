@@ -41,6 +41,9 @@ End Sub
 
 
 Public Sub ShowGitCommitForm(Control As IRibbonControl)
+    Load GitCommitMessageForm
+    GitCommitMessageForm.ResetForm
+    
     With GitCommitMessageForm
         .caption = "Git Commit Message"
         .TitleLabel.caption = "Enter Commit Message"
@@ -167,6 +170,9 @@ Public Sub GitExportAndCommit(Control As IRibbonControl)
     ' Add All
     GitCommands.GitAddAll
     
+    Load GitCommitMessageForm
+    GitCommitMessageForm.ResetForm
+    
     ' Commit
     With GitCommitMessageForm
         .caption = "Git Commit Message"
@@ -175,8 +181,6 @@ Public Sub GitExportAndCommit(Control As IRibbonControl)
         
         .Callback = "GitCommitAm"
     End With
-    
-    Load GitCommitMessageForm
     
     MoveFormOnApplication GitCommitMessageForm
     GitCommitMessageForm.Show False

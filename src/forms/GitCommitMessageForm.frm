@@ -51,17 +51,20 @@ Public Property Let Placeholder(text As String)
 End Property
 
 Private Sub UserForm_initialize()
-    callbackFn = ""
-    callbackArgs = ""
-    pText = ""
-    
-    Me.MessageTextBox.text = pText
+    Me.ResetForm
 End Sub
 
 Private Sub CancelButton_Click()
     GitCommitMessageForm.Hide
 End Sub
 
+Public Sub ResetForm()
+    callbackFn = ""
+    callbackArgs = ""
+    pText = ""
+    
+    Me.MessageTextBox.text = pText
+End Sub
 
 Private Sub MessageTextBox_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
     If KeyCode = vbKeyReturn Then
