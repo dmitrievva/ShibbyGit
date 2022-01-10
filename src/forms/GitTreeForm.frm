@@ -58,15 +58,27 @@ Private Sub UserForm_initialize()
     
     Me.LabelLoading.Visible = False
     
-    Me.TV_files.CheckBoxes = False
-    Me.TV_branches.LabelEdit = tvwManual
-    Me.TV_files.LabelEdit = tvwManual
+    With Me.TV_files
+        .CheckBoxes = False
+        .LabelEdit = tvwManual
+        
+        .Indentation = 18
+    End With
     
-    Me.TV_branches.setFocus
+    
+    With Me.TV_branches
+        .LabelEdit = tvwManual
+        .CheckBoxes = False
+        
+        .Indentation = 18
+    End With
+
+    
+    Me.TV_branches.SetFocus
 End Sub
 
 
-Public Sub ResetForm()
+Public Sub ResetForm(Optional forceRefresh As Boolean = False)
     Dim TV          As TreeView
     Dim localBr     As String
     Dim remote      As String
@@ -83,6 +95,8 @@ Public Sub ResetForm()
     Me.selectedFile = ""
     
     Me.TV_files.Nodes.Clear
+    
+    If forceRefresh Then RefreshForm
     
     ' local branches
     localBr = GitCommands.RunGitAsProcess("branch")
@@ -123,10 +137,10 @@ Public Sub ResetForm()
     ' uncommited diff
     Set DiffDict = GetCommitDetail("")
     
-    If DiffDict.count = 0 Then
-        data = Commits
-    Else
+    If DiffDict.count > 0 Then
         data = FormDataWithUncommited(Commits)
+    Else
+        data = Commits
     End If
     
     If Not commitsListBox Is Nothing Then
@@ -399,7 +413,7 @@ Private Function CheckTwoCommits() As Variant
     commit1 = Me.selectedCommit
         
     index = Me.commitsListBox.ListIndex(0)
-    If index < Me.commitsListBox.RowsCount Then
+    If index < Me.commitsListBox.RowsCount - 1 Then
         Set rowCollect = Me.commitsListBox.RowLabels(index + 1, False)
         If rowCollect.count > 0 Then
             commit2 = rowCollect(1).caption
@@ -414,6 +428,8 @@ Private Function CheckTwoCommits() As Variant
     
     commit1 = Replace(commit1, DIFF, "")
     commit2 = Replace(commit2, DIFF, "")
+    
+    If commit1 = commit2 Then commit2 = ""
     
     arr = Array(commit1, commit2)
     
@@ -857,12 +873,16 @@ End Sub
 
 Private Sub AddParentNode(TV As TreeView, text As String, Optional id As String)
     If id = "" Then id = text & ID_POSTFIX
-    TV.Nodes.Add key:=id, text:=text
+    If Not IsNodeExists(TV, id) Then
+        TV.Nodes.Add key:=id, text:=text
+    End If
 End Sub
 
 Private Sub AddChildNode(TV As TreeView, parentId As String, text As String, Optional id As String)
     If id = "" Then id = text & ID_POSTFIX
-    TV.Nodes.Add Relative:=parentId, Relationship:=tvwChild, key:=id, text:=text
+    If Not IsNodeExists(TV, id) Then
+        TV.Nodes.Add Relative:=parentId, Relationship:=tvwChild, key:=id, text:=text
+    End If
 End Sub
 
 Private Sub ClearNodesFormat(TV As TreeView)
@@ -959,10 +979,17 @@ Private Sub RefreshButton_Click()
 End Sub
 
 Private Sub RefreshForm()
+    
+
     GitCommits.ClearCacheChanges
     GitCommits.ClearCommits
     
+    Me.TV_branches.Nodes.Clear
+    Me.TV_files.Nodes.Clear
+    
     Call ClearListBox(Me.fileChangesListBox)
+    Call ClearListBox(Me.commitsListBox)
     
     Me.ResetForm
 End Sub
+

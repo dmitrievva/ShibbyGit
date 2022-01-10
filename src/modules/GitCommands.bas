@@ -12,7 +12,12 @@ Public Declare Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long) 'For 32 B
 
 Public Sub GitInit()
     Dim out As String
+    
     out = RunGitAsProcess("init")
+    
+    out = GitCommands.RunGitAsProcess("config --local user.name """ & ShibbySettings.UserName & """")
+    out = GitCommands.RunGitAsProcess("config --local user.email """ & ShibbySettings.UserEmail & """")
+    
     If out = "" Then
         out = "No output from git init"
     End If

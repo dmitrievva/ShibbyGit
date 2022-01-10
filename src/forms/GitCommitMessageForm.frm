@@ -64,11 +64,12 @@ Public Sub ResetForm()
     pText = ""
     
     Me.MessageTextBox.text = pText
+    Me.MessageTextBox.SetFocus
 End Sub
 
 Private Sub MessageTextBox_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
     If KeyCode = vbKeyReturn Then
-        OKButton.setFocus
+        OKButton.SetFocus
         DoEvents
         OKButton_Click
     End If

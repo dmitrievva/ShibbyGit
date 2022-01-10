@@ -39,28 +39,38 @@ Public Sub ResetForm()
     
     If GitExeTextBox.text <> "" Then
         ' set the username field
-        Dim userName As String
-        If ProjectPathTextBox.text = "" Then
-            userName = GitCommands.RunGitAsProcess("config user.name", UseProjectPath:=False)
-        Else
-            userName = GitCommands.RunGitAsProcess("config user.name")
+        
+        Dim UserName As String
+        
+        UserName = ShibbySettings.UserName
+        If UserName = "" Then
+            If ProjectPathTextBox.text = "" Then
+                UserName = GitCommands.RunGitAsProcess("config user.name", UseProjectPath:=False)
+            Else
+                UserName = GitCommands.RunGitAsProcess("config user.name")
+            End If
+            If Len(UserName) > 0 Then
+                UserName = left(UserName, Len(UserName) - 1)
+            End If
         End If
-        If Len(userName) > 0 Then
-            userName = left(userName, Len(userName) - 1)
-        End If
-        UserNameBox.value = userName
+        UserNameBox.value = UserName
         
         ' set the email field
-        Dim userEmail As String
-        If ProjectPathTextBox.text = "" Then
-            userEmail = GitCommands.RunGitAsProcess("config user.email", UseProjectPath:=False)
-        Else
-            userEmail = GitCommands.RunGitAsProcess("config user.email")
+        Dim UserEmail As String
+        
+        UserEmail = ShibbySettings.UserEmail
+        If UserEmail = "" Then
+            If ProjectPathTextBox.text = "" Then
+                UserEmail = GitCommands.RunGitAsProcess("config user.email", UseProjectPath:=False)
+            Else
+                UserEmail = GitCommands.RunGitAsProcess("config user.email")
+            End If
+            If Len(UserEmail) > 0 Then
+                UserEmail = left(UserEmail, Len(UserEmail) - 1)
+            End If
         End If
-        If Len(userEmail) > 0 Then
-            userEmail = left(userEmail, Len(userEmail) - 1)
-        End If
-        UserEmailBox.value = userEmail
+
+        UserEmailBox.value = UserEmail
     End If
     
     ' set the frx box value
@@ -86,15 +96,24 @@ Public Sub ResetForm()
     
 End Sub
 
-
 '****************************************************************
 ' component callbacks
+
+Private Sub UserForm_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
+    If KeyCode = vbKeyReturn Then
+        SaveAndHide
+    End If
+End Sub
 
 Private Sub CancelButton_Click()
     GitSettingsForm.Hide
 End Sub
 
 Private Sub OKButton_Click()
+    SaveAndHide
+End Sub
+
+Private Sub SaveAndHide()
     SaveGitExe
     SaveProjectPath
     SaveUserName
@@ -160,19 +179,31 @@ End Sub
 
 ' save the user email to the git repo
 Private Sub SaveUserEmail()
+    Dim email       As String
+    
+    email = UserEmailBox.value
+    
     If needGitUserEmailUpdate Then
-        GitCommands.RunGitAsProcess ("config --local user.email """ & UserEmailBox.value & """")
+        GitCommands.RunGitAsProcess ("config --local user.email """ & email & """")
     End If
     needGitUserEmailUpdate = False
+    
+    ShibbySettings.UserEmail = email
 End Sub
 
 
 ' save the user name to the git repo
 Private Sub SaveUserName()
+    Dim name        As String
+    
+    name = UserNameBox.value
+    
     If needGitUserNameUpdate Then
-        GitCommands.RunGitAsProcess ("config --local user.name """ & UserNameBox.value & """")
+        GitCommands.RunGitAsProcess ("config --local user.name """ & name & """")
     End If
     needGitUserNameUpdate = False
+    
+    ShibbySettings.UserName = name
 End Sub
 
 ' save the frx setting

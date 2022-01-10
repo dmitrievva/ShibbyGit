@@ -9,7 +9,6 @@ Option Explicit
 Sub CreateNewBranch()
     
     Load GitCommitMessageForm
-    GitCommitMessageForm.ResetForm
     
     With GitCommitMessageForm
         .caption = "Create New Branch"
@@ -17,10 +16,13 @@ Sub CreateNewBranch()
         .OKButton.caption = "checkout -b"
         
         .Callback = "RunGitNewBranch"
+        
+        .Placeholder = ""
     End With
     
     MoveFormOnApplication GitCommitMessageForm
     GitCommitMessageForm.Show False
+   
 End Sub
 
 Sub RunGitNewBranch(ByVal branchName As String)
@@ -30,7 +32,7 @@ Sub RunGitNewBranch(ByVal branchName As String)
     
     MsgBox output
     
-    GitTreeForm.ResetForm
+    GitTreeForm.ResetForm forceRefresh:=True
 End Sub
 
 Sub CheckoutSelectedBranch(branch As String)
@@ -42,12 +44,11 @@ Sub CheckoutSelectedBranch(branch As String)
     
     MsgBox output
     
-    GitTreeForm.ResetForm
+    GitTreeForm.ResetForm forceRefresh:=True
 End Sub
 
 Sub NewBranchFromSelectedBranch(branch As String)
     Load GitCommitMessageForm
-    GitCommitMessageForm.ResetForm
     
     With GitCommitMessageForm
         .caption = "New Branch From Branch " & branch
@@ -56,10 +57,13 @@ Sub NewBranchFromSelectedBranch(branch As String)
         
         .Callback = "RunGitNewBranchFromSelected"
         .CallbackArguments = branch
+        
+        .Placeholder = branch
     End With
     
     MoveFormOnApplication GitCommitMessageForm
     GitCommitMessageForm.Show False
+    
 End Sub
 
 Sub RunGitNewBranchFromSelected(ByVal newBranchName As String, ByVal branchName As String)
@@ -69,7 +73,7 @@ Sub RunGitNewBranchFromSelected(ByVal newBranchName As String, ByVal branchName 
     
     MsgBox output
     
-    GitTreeForm.ResetForm
+    GitTreeForm.ResetForm forceRefresh:=True
 End Sub
 
 Sub MergeSelectedIntoCurrentBranch(currentBranch As String, selectedBranch As String)
@@ -82,7 +86,7 @@ Sub MergeSelectedIntoCurrentBranch(currentBranch As String, selectedBranch As St
     
     MsgBox output
     
-    GitTreeForm.ResetForm
+    GitTreeForm.ResetForm forceRefresh:=True
 End Sub
 
 Sub RebaseCurrentOntoSelectedBranch(currentBranch As String, selectedBranch As String)
@@ -95,17 +99,18 @@ Sub RebaseCurrentOntoSelectedBranch(currentBranch As String, selectedBranch As S
     
     MsgBox output
     
-    GitTreeForm.ResetForm
+    GitTreeForm.ResetForm forceRefresh:=True
 End Sub
 
 Sub RenameSelectedBranch(ByVal branch As String)
     Load GitCommitMessageForm
-    GitCommitMessageForm.ResetForm
     
     With GitCommitMessageForm
         .caption = "Rename Selected Branch "
         .TitleLabel.caption = "Write branch name"
         .OKButton.caption = "branch -m"
+        
+        .Placeholder = branch
         
         .Callback = "RunRenameSelectedBranch"
         .CallbackArguments = branch
@@ -113,7 +118,7 @@ Sub RenameSelectedBranch(ByVal branch As String)
     
     MoveFormOnApplication GitCommitMessageForm
     GitCommitMessageForm.Show False
-    
+   
 End Sub
 
 Sub RunRenameSelectedBranch(ByVal newBranchName As String, ByVal selectedBranch As String)
@@ -121,9 +126,13 @@ Sub RunRenameSelectedBranch(ByVal newBranchName As String, ByVal selectedBranch 
     
     output = GitCommands.RunGitAsProcess("branch -m " & selectedBranch & " " & newBranchName)
     
-    MsgBox output
+    If output = "" Then
+        MsgBox "No output from git"
+    Else
+        MsgBox output
+    End If
     
-    GitTreeForm.ResetForm
+    GitTreeForm.ResetForm forceRefresh:=False
     
 End Sub
 
@@ -140,7 +149,7 @@ Sub DeleteSelectedBranch(selectedBranch As String)
     
     MsgBox output
     
-    GitTreeForm.ResetForm
+    GitTreeForm.ResetForm forceRefresh:=True
     
 End Sub
 

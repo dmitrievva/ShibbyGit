@@ -157,3 +157,27 @@ Public Sub OpenFileFolder(file As String)
     Shell "explorer """ & folderPath & "", vbNormalFocus
     
 End Sub
+
+' Remove vba files
+Public Sub RemoveVBAfiles(ByRef folderPath As Object)
+    Dim fileObj         As Object
+    Dim fileName        As String
+    Dim objSubFolder    As Object
+    Dim needDel         As Boolean
+    
+    For Each fileObj In folderPath.files
+        fileName = UCase(fileObj.name)
+        needDel = Right(fileName, 4) = ".BAS" Or Right(fileName, 4) = ".CLS" Or _
+                Right(fileName, 4) = ".FRM"
+        
+        If needDel Then
+            Kill fileObj
+        End If
+    Next fileObj
+    
+    For Each objSubFolder In folderPath.subfolders
+        Call RemoveVBAfiles(objSubFolder)
+    Next objSubFolder
+    
+    Set objSubFolder = Nothing
+End Sub

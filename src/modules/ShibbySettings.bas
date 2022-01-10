@@ -15,6 +15,8 @@ Private Const FRX_CLEANUP_PROPERTY As String = "shibby_FrxCleanup"
 Private Const EXPORT_ON_GIT_PROPERTY As String = "shibby_ExportOnGit"
 Private Const FILESTRUCTURE_PROPERTY As String = "shibby_FileStructure"
 Private Const REMOVE_FAILS_BEFORE_EXPORT_PROPERTY As String = "shibby_RemoveFiles"
+Private Const USER_NAME_PROPERTY = "shibby_UserName"
+Private Const USER_EMAIL_PROPERTY = "shibby_UserEmail"
 
 Public Enum ShibbyFileStructure
     flat = 0
@@ -131,4 +133,25 @@ End Property
 ' set the remove files before export
 Public Property Let RemoveFiles(ByVal newVal As Boolean)
     DocPropIO.AddStringToDocProperties REMOVE_FAILS_BEFORE_EXPORT_PROPERTY, newVal
+End Property
+
+' get user name
+Public Property Get UserName() As String
+    UserName = DocPropIO.GetItemFromDocProperties(USER_NAME_PROPERTY)
+End Property
+
+' set user name
+Public Property Let UserName(ByVal newVal As String)
+    DocPropIO.AddStringToDocProperties USER_NAME_PROPERTY, newVal
+End Property
+
+
+' get user email
+Public Property Get UserEmail() As String
+    UserEmail = DocPropIO.GetItemFromDocProperties(USER_EMAIL_PROPERTY)
+End Property
+
+' set user email
+Public Property Let UserEmail(ByVal newVal As String)
+    DocPropIO.AddStringToDocProperties USER_EMAIL_PROPERTY, newVal
 End Property

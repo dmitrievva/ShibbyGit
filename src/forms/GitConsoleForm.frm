@@ -78,7 +78,7 @@ Private Sub CommandBox_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shi
         OutputBox.value = output
         OutputBox.SelLength = 0
         OutputBox.SelStart = 0
-        OutputBox.setFocus
+        OutputBox.SetFocus
         KeyCode.value = 0
         
     ' up key: show previous command
@@ -123,7 +123,7 @@ End Sub
 
 
 Private Sub GiveCommandBoxFocusAndSelect()
-    CommandBox.setFocus
+    CommandBox.SetFocus
     CommandBox.SelStart = 0
     CommandBox.SelLength = Len(CommandBox.value)
 End Sub
@@ -132,7 +132,7 @@ Private Sub OutputBox_MouseUp(ByVal Button As Integer, ByVal Shift As Integer, B
     If Button = vbKeyMButton Then
         With CommandBox
             .SelText = OutputBox.SelText
-            .setFocus
+            .SetFocus
         End With
     End If
 End Sub

@@ -225,24 +225,20 @@ End Sub
 
 ' Remove files before export
 Sub RemoveFilesBeforeExport()
-    Dim folderPath  As String
-    Dim strFile     As String
-    Dim needDel     As Boolean
+    Dim folderPath      As String
+    Dim objFSO          As Object
+    Dim objFolder       As Object
     
     If Not ShibbySettings.RemoveFiles Then Exit Sub
     
     folderPath = pGitDir & "\"
     
-    strFile = Dir(folderPath)
-    Do While Len(strFile) > 0
-        needDel = Strings.Right(strFile, 4) = ".cls" Or Strings.Right(strFile, 4) = ".frm" Or _
-                  Strings.Right(strFile, 4) = ".bas"
-        
-        If needDel Then
-            Kill folderPath & strFile
-        End If
-        
-        strFile = Dir
-    Loop
+    Set objFSO = CreateObject("Scripting.FileSystemObject")
+    Set objFolder = objFSO.getfolder(folderPath)
+    
+    Call RemoveVBAfiles(objFolder)
+    
+    Set objFSO = Nothing
+    Set objFolder = Nothing
     
 End Sub
