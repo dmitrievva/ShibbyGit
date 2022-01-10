@@ -56,7 +56,7 @@ Tested on Microsoft Excel only but should work with Word and PowerPoint.
     -   Checkout selected commit
     -   Cherry-pick selected commit
     -   Revert selected commit
-    -   Squash selected commits (using `git reabse -i`)
+    -   Squash selected commits (using `git rebase -i`)
 
 <img width='40%' src="img/PopupCommits.png" alt="Commits popup screen">
 
