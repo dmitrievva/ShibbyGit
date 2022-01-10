@@ -9,13 +9,13 @@ Currently works fine as a front end for `git.exe`.
 
 ## Overview
 
-Fork of project <a href="https://github.com/ericaddison/ShibbyGit">ShibbyGit</a> of <a href="https://github.com/ericaddison">Eric Addison</a> with some changes.
+Fork of project <a href="https://github.com/ericaddison/ShibbyGit">ShibbyGit</a> by <a href="https://github.com/ericaddison">Eric Addison</a> with some changes.
 <br/>
 Added GitTree userform, which allow to view changes between commits for every file.
 <br/>
 Listboxes realised with using <a href="https://github.com/balin77/ExcelDesignListBox">DesignListBox</a> by <a href="https://github.com/balin77">balin77</a>.
 <br/>
-Tested on Microsoft Excel only but could be work with Word and PowerPoint.
+Tested on Microsoft Excel only but should work with Word and PowerPoint.
 
 <img width='80%' src="img/GitTree.png" alt="GitTree screen">
 
